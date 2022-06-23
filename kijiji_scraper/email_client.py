@@ -13,16 +13,16 @@ class EmailClient():
         self.smtp_port = email_config.get("smtp port")
 
     # Sends an email with links and info of new ads
-    def mail_ads(self, ad_dict, email_title):
+    def mail_ads(self, ad_dict, email_title,url):
         subject = self.__create_email_subject(email_title, len(ad_dict))
-        body = self.__create_email_body(ad_dict)
+        body = self.__create_email_body(ad_dict,url)
 
         msg = MIMEText(body, 'html')
         msg['Subject'] = subject
         msg['From'] = self.from_email
         msg['To'] = self.receiver
 
-        server = smtplib.SMTP_SSL(self.smtp_server, self.smtp_port)
+        server = smtplib.SMTP(self.smtp_server, self.smtp_port)
 
         server.ehlo()
         server.login(self.username, self.password)
@@ -36,7 +36,7 @@ class EmailClient():
 
         return 'One New ' + email_title + ' Ad Found!'
 
-    def __create_email_body(self, ad_dict):
+    def __create_email_body(self, ad_dict,url):
         body = '<!DOCTYPE html> \n<html> \n<body>'
         try:
             for ad_id in ad_dict:
@@ -63,7 +63,7 @@ class EmailClient():
             body += '<p>' + ad_dict[ad_id]['Title'] + '<br />'
             body += ad_dict[ad_id]['Url'] + '<br /><br />' + '</p>'
 
-        body += '<p>This is an automated message, \
-            please do not reply to this message.</p>'
+        body += '<p><a href="' + url + '">Original search link</a></p><p>' + url + '</p>'
+#	body +=	'<p>This is an automated message, please do not reply to this message.</p>'
 
         return body

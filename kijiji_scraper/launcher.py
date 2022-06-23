@@ -102,7 +102,7 @@ def main():
             email_client = EmailClient(email_config)
             # Overwrite email recepeients if specified
             if args.email: email_client.receiver=','.join(args.email)
-            email_client.mail_ads(ads, email_title)
+            email_client.mail_ads(ads, email_title,url)
             print("Email sent to %s"%email_client.receiver)
         else: print("No email sent")
 
